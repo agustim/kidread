@@ -1,0 +1,53 @@
+<html>
+<head>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+  <script type="text/javascript" src="http://flesler-plugins.googlecode.com/files/jquery.scrollTo-1.4.2-min.js"></script>
+</head>
+<style>
+body { font-size: 3em; }
+p { color:black; margin:5px; cursor:pointer; }
+.actual { color:red; }
+.hilite { color:grey; }
+</style>
+	<script>
+	var index = 0;
+	var offsetScroll = -40;
+	function getArguments(strURL){
+		var strAux = new String(strURL);
+		var arrPagina = strAux.split("/");
+		strAux = new String(arrPagina[(arrPagina.length-1)]);
+		var arrDades = strAux.split("?");
+		return (arrDades.length == 2) ? arrDades[(arrDades.length-1)] : "patufet";
+	}
+	$(document).ready(function() {
+		page = getArguments(window.location);
+		$("#text").load("./"+page+".txt",function(){
+			var obj = $("#text");
+		 	var wordpull = $.trim(obj.text()).split(" ");
+			obj.text("");
+			i = 0;
+			for(var x in wordpull){
+				obj.append('<label id="word_'+i+'">'+wordpull[x]+'</label> ');
+				i++;
+			}
+			$("#word_"+index).addClass("actual");
+			$.scrollTo('label#word_'+index,100, {'offset': offsetScroll});
+			$(document).keypress(function(event) {
+				event.preventDefault();
+				if (event.keyCode == 37 && event.charCode == 0) {
+					$("#word_"+index--).removeClass("actual");
+					$("#word_"+index).removeClass("hilite").addClass("actual");
+				} else {
+					$("#word_"+index++).removeClass("actual").addClass("hilite");
+					$("#word_"+index).addClass("actual");
+				}
+				$.scrollTo('label#word_'+index,100, {'offset': offsetScroll});
+			});
+		});
+	});
+	</script>
+<body>
+	<br/>
+	<p id="text"></p>
+</body>
+</html>
